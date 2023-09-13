@@ -12,11 +12,11 @@
 
 using namespace std;
 
-GLFWwindow* openglInit();
+GLFWwindow *openglInit();
 void configureGlobalState();
 void configureObjects(unsigned int &cubeVAO, unsigned int &cubeVBO,
-                       unsigned int &planeVAO, unsigned int &planeVBO,
-                       unsigned int &grassVAO, unsigned int &grassVBO);
+                      unsigned int &planeVAO, unsigned int &planeVBO,
+                      unsigned int &grassVAO, unsigned int &grassVBO);
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
@@ -56,8 +56,8 @@ int main()
     unsigned int planeVAO, planeVBO;
     unsigned int grassVAO, grassVBO;
     configureObjects(cubeVAO, cubeVBO,
-                      planeVAO, planeVBO,
-                      grassVAO, grassVBO);
+                     planeVAO, planeVBO,
+                     grassVAO, grassVBO);
 
     // load textures
     // -------------
@@ -124,8 +124,7 @@ int main()
         shader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        glBindVertexArray(cubeVAO);
-
+        glBindVertexArray(grassVAO);
         glBindTexture(GL_TEXTURE_2D, transparentTexture);
 
         std::map<float, glm::vec3> sorted;
@@ -177,7 +176,7 @@ void processInput(GLFWwindow *window)
         camera.ProcessKeyboard(RIGHT, deltaTime);
 }
 
-GLFWwindow* openglInit()
+GLFWwindow *openglInit()
 {
     // glfw: initialize and configure
     // ------------------------------
@@ -227,6 +226,9 @@ void configureGlobalState()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+    glFrontFace(GL_CW);
     stbi_set_flip_vertically_on_load(true);
 }
 
@@ -239,12 +241,12 @@ void configureObjects(
     // ------------------------------------------------------------------
     float cubeVertices[] = {
         // positions          // texture Coords
-        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
         0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
-        0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-        0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
         -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+        0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+        0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
 
         -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
         0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
@@ -260,12 +262,12 @@ void configureObjects(
         -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
         -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
 
-        0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+        0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
         0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-        0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-        0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
         0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+        0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+        0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+        0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
 
         -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
         0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
@@ -274,22 +276,22 @@ void configureObjects(
         -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
         -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
 
-        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
         0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
         0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
         0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
         -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
-        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
     };
 
     float planeVertices[] = {
         // positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
         5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
+        -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
         -5.0f, -0.5f, 5.0f, 0.0f, 0.0f,
-        -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
 
-        5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
         -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
+        5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
         5.0f, -0.5f, -5.0f, 2.0f, 2.0f
     };
 
@@ -299,9 +301,9 @@ void configureObjects(
         0.0f, -0.5f, 0.0f, 0.0f, 1.0f,
         1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
 
-        0.0f, 0.5f, 0.0f, 0.0f, 0.0f,
         1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
-        1.0f, 0.5f, 0.0f, 1.0f, 0.0f
+        1.0f, 0.5f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.5f, 0.0f, 0.0f, 0.0f,
     };
 
     // cube VAO
@@ -327,7 +329,7 @@ void configureObjects(
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
     glBindVertexArray(0);
 
-    // cube VAO
+    // transparent VAO
     glGenVertexArrays(1, &grassVAO);
     glGenBuffers(1, &grassVBO);
     glBindVertexArray(grassVAO);
@@ -338,7 +340,6 @@ void configureObjects(
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
     glBindVertexArray(0);
-
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
