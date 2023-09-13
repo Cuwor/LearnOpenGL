@@ -254,6 +254,7 @@
     <Content Include="resources\Teapot\Teapot.prefab" />
     <Content Include="resources\Teapot\Teapot.prefab.meta" />
     <Content Include="resources\textures\blending_transparent_window.png" />
+    <Content Include="resources\textures\grass.png" />
     <Content Include="resources\textures\marble.jpg" />
     <Content Include="resources\textures\metal.png" />
     <Content Include="Shaders\lightCube.frag" />
